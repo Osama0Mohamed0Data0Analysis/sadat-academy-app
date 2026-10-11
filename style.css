@@ -70,3 +70,73 @@ body { background-color: var(--bg); color: var(--text); }
     .top-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
     .table-section { padding: 0 15px 15px 15px; }
 }
+
+
+
+/* شاشة تسجيل الدخول والصلاحيات */
+.login-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.login-card {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.login-card h2 {
+    color: var(--primary);
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+}
+
+.login-card p {
+    color: #64748b;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+}
+
+.role-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn-role {
+    background-color: #f1f5f9;
+    color: var(--text);
+    border: 1px solid #cbd5e1;
+    padding: 12px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: 0.2s;
+    text-align: right;
+}
+
+.btn-role i {
+    color: var(--secondary);
+    font-size: 1.2rem;
+}
+
+.btn-role:hover {
+    background-color: #e2e8f0;
+    border-color: var(--secondary);
+}
