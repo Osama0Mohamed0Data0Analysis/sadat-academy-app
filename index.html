@@ -3,24 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق أكاديمية السادات - إدارة الفروع</title>
+    <title>تطبيق أكاديمية السادات - إدارة الفروع والصلاحيات</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="app-container">
+
+    <!-- شاشة تسجيل الدخول واختيار الصلاحيات (Role Switcher) -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <h2>أكاديمية السادات للعلوم الإدارية</h2>
+            <p>اختر صففتك الإدارية لتسجيل الدخول:</p>
+            <div class="role-buttons">
+                <button class="btn-role" onclick="loginAs('super_dean')">
+                    <i class="fa-solid fa-user-tie"></i> العميد الرئيسي (إشراف شامل 5 فروع)
+                </button>
+                <button class="btn-role" onclick="loginAs('branch_dean')">
+                    <i class="fa-solid fa-building-user"></i> عميد فرع المحافظة
+                </button>
+                <button class="btn-role" onclick="loginAs('department_head')">
+                    <i class="fa-solid fa-user-pen"></i> رئيس القسم / وكيل (إدخال Templates)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- التطبيق الرئيسي (يظهر بعد اختيار الصلاحية) -->
+    <div class="app-container" id="appContainer" style="display: none;">
         <!-- القائمة الجانبية -->
         <aside class="sidebar">
             <div class="logo-area">
                 <h2>أكاديمية السادات</h2>
-                <p>إدارة الفروع والوكلاء</p>
+                <p id="userRoleTitle">النظام الإداري</p>
             </div>
             <ul class="nav-links">
                 <li class="active"><a href="#"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
-                <li><a href="#"><i class="fa-solid fa-building-columns"></i> الفروع الخمسة</a></li>
+                <li id="branchesNav"><a href="#"><i class="fa-solid fa-building-columns"></i> الفروع الخمسة</a></li>
                 <li><a href="#"><i class="fa-solid fa-sitemap"></i> الأقسام والوكلاء</a></li>
                 <li><a href="#"><i class="fa-solid fa-file-lines"></i> نماذج الإدخال (Templates)</a></li>
                 <li><a href="#"><i class="fa-solid fa-triangle-exclamation"></i> متابعة الـ Deadlines</a></li>
+                <li><a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</a></li>
             </ul>
         </aside>
 
@@ -28,8 +50,8 @@
         <main class="main-content">
             <header class="top-bar">
                 <div class="user-info">
-                    <span>مرحباً، <strong>مكتب العميد الرئيسي</strong></span>
-                    <span class="badge">صلاحية شاملة (تطلاع على 4 فروع)</span>
+                    <span id="welcomeText">مرحباً، <strong>المستخدم</strong></span>
+                    <span class="badge" id="roleBadge">صلاحية محددة</span>
                 </div>
                 <button class="btn-primary" id="openModalBtn"><i class="fa-solid fa-plus"></i> معاملة / Template جديدة</button>
             </header>
@@ -61,7 +83,7 @@
 
             <!-- جدول المعاملات -->
             <section class="table-section">
-                <h2>حركة المعاملات المباشرة بين المكاتب والأقسام</h2>
+                <h2 id="tableTitle">حركة المعاملات المباشرة</h2>
                 <table class="data-table">
                     <thead>
                         <tr>
@@ -80,15 +102,7 @@
                             <td>فرع المحافظة (1) - شؤون الطلاب</td>
                             <td>2026-10-20</td>
                             <td><span class="badge warning">في الانتظار</span></td>
-                            <td><button class="btn-sm">مراجعة</button></td>
-                        </tr>
-                        <tr>
-                            <td>#502</td>
-                            <td>تقرير أداء الأقسام الشهرى</td>
-                            <td>الفرع الرئيسي - قسم الإدارة</td>
-                            <td>2026-10-10</td>
-                            <td><span class="badge danger">فائت (Deadline)</span></td>
-                            <td><button class="btn-sm">مراجعة</button></td>
+                            <td><button class="btn-sm">مراجعة واتخاذ قرار</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -106,7 +120,7 @@
                     <label>عنوان المعاملة</label>
                     <input type="text" id="titleInput" required placeholder="أدخل العنوان...">
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="branchSelectGroup">
                     <label>الفرع والجهة الموجه لها</label>
                     <select id="branchInput">
                         <option value="الفرع الرئيسي">الفرع الرئيسي</option>
