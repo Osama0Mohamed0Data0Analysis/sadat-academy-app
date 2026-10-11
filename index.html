@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق أكاديمية السادات - إدارة الفروع</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- القائمة الجانبية -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <h2>أكاديمية السادات</h2>
+                <p>إدارة الفروع والوكلاء</p>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><a href="#"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+                <li><a href="#"><i class="fa-solid fa-building-columns"></i> الفروع الخمسة</a></li>
+                <li><a href="#"><i class="fa-solid fa-sitemap"></i> الأقسام والوكلاء</a></li>
+                <li><a href="#"><i class="fa-solid fa-file-lines"></i> نماذج الإدخال (Templates)</a></li>
+                <li><a href="#"><i class="fa-solid fa-triangle-exclamation"></i> متابعة الـ Deadlines</a></li>
+            </ul>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="user-info">
+                    <span>مرحباً، <strong>مكتب العميد الرئيسي</strong></span>
+                    <span class="badge">صلاحية شاملة (تطلاع على 4 فروع)</span>
+                </div>
+                <button class="btn-primary" id="openModalBtn"><i class="fa-solid fa-plus"></i> معاملة / Template جديدة</button>
+            </header>
+
+            <!-- الإحصائيات -->
+            <section class="stats-grid">
+                <div class="card">
+                    <i class="fa-solid fa-clock text-warning"></i>
+                    <div>
+                        <h3>في الانتظار</h3>
+                        <p class="number">8</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-check-circle text-success"></i>
+                    <div>
+                        <h3>تم اتخاذ القرار</h3>
+                        <p class="number">24</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+                    <div>
+                        <h3>مهام فائتة (Deadline)</h3>
+                        <p class="number">3</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- جدول المعاملات -->
+            <section class="table-section">
+                <h2>حركة المعاملات المباشرة بين المكاتب والأقسام</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>رقم</th>
+                            <th>الموضوع / الطلب</th>
+                            <th>الفرع والقسم</th>
+                            <th>الموعد النهائي (Deadline)</th>
+                            <th>الحالة</th>
+                            <th>الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskTableBody">
+                        <tr>
+                            <td>#501</td>
+                            <td>اعتماد جداول الامتحانات الفصلية</td>
+                            <td>فرع المحافظة (1) - شؤون الطلاب</td>
+                            <td>2026-10-20</td>
+                            <td><span class="badge warning">في الانتظار</span></td>
+                            <td><button class="btn-sm">مراجعة</button></td>
+                        </tr>
+                        <tr>
+                            <td>#502</td>
+                            <td>تقرير أداء الأقسام الشهرى</td>
+                            <td>الفرع الرئيسي - قسم الإدارة</td>
+                            <td>2026-10-10</td>
+                            <td><span class="badge danger">فائت (Deadline)</span></td>
+                            <td><button class="btn-sm">مراجعة</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <!-- نافذة إدخال Template جديدة -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModalBtn">&times;</span>
+            <h2>إدخال بيانات (Template مخصصة)</h2>
+            <form id="templateForm">
+                <div class="form-group">
+                    <label>عنوان المعاملة</label>
+                    <input type="text" id="titleInput" required placeholder="أدخل العنوان...">
+                </div>
+                <div class="form-group">
+                    <label>الفرع والجهة الموجه لها</label>
+                    <select id="branchInput">
+                        <option value="الفرع الرئيسي">الفرع الرئيسي</option>
+                        <option value="فرع المحافظة (1)">فرع المحافظة (1)</option>
+                        <option value="فرع المحافظة (2)">فرع المحافظة (2)</option>
+                        <option value="فرع المحافظة (3)">فرع المحافظة (3)</option>
+                        <option value="فرع المحافظة (4)">فرع المحافظة (4)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>الموعد النهائي (Deadline)</label>
+                    <input type="date" id="deadlineInput" required>
+                </div>
+                <div class="form-group">
+                    <label>التفاصيل والقرار المطلوب</label>
+                    <textarea id="descInput" rows="3" placeholder="اكتب تفاصيل المعاملة هنا..."></textarea>
+                </div>
+                <button type="submit" class="btn-primary full-width">حفظ وإرسال المعاملة</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
