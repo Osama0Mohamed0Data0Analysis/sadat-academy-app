@@ -1,88 +1,68 @@
-// استبدل هذه القيم ببيانات مشروعك المجاني على Supabase
-const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+// إدارة الصلاحيات وتسجيل الدخول الوهمي لاختبار النظام
+function loginAs(role) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'flex';
 
-// دالة جلب المعاملات من قاعدة البيانات السحابية وتحديث الجدول على الموبايل والكمبيوتر
-async function fetchTasks() {
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/tasks?select=*`, {
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-            }
-        });
-        const tasks = await response.json();
-        renderTasks(tasks);
-    } catch (error) {
-        console.error('خطأ في جلب البيانات من السحابة:', error);
+    const welcomeText = document.getElementById('welcomeText');
+    const roleBadge = document.getElementById('roleBadge');
+    const userRoleTitle = document.getElementById('userRoleTitle');
+    const branchesNav = document.getElementById('branchesNav');
+    const tableTitle = document.getElementById('tableTitle');
+
+    if (role === 'super_dean') {
+        welcomeText.innerHTML = 'مرحباً، <strong>العميد الرئيسي</strong>';
+        roleBadge.innerText = 'صلاحية شاملة (إشراف 5 فروع)';
+        userRoleTitle.innerText = 'مكتب العميد الرئيسي';
+        branchesNav.style.display = 'block';
+        tableTitle.innerText = 'متابعة شاملة لجميع مكاتب العمداء والفروع الأربعة';
+    } else if (role === 'branch_dean') {
+        welcomeText.innerHTML = 'مرحباً، <strong>عميد الفرع</strong>';
+        roleBadge.innerText = 'صلاحية فرع المحافظة';
+        userRoleTitle.innerText = 'مكتب عميد الفرع';
+        branchesNav.style.display = 'none';
+        tableTitle.innerText = 'معاملات فرع المحافظة والوكلاء التابعين';
+    } else if (role === 'department_head') {
+        welcomeText.innerHTML = 'مرحباً، <strong>رئيس القسم / وكيل</strong>';
+        roleBadge.innerText = 'صلاحية إدخال Templates';
+        userRoleTitle.innerText = 'إدارة الأقسام';
+        branchesNav.style.display = 'none';
+        tableTitle.innerText = 'معاملات القسم والـ Deadlines الخاصة بي';
     }
 }
 
-// دالة عرض المعاملات في الجدول المتجاوب (Responsive Table)
-function renderTasks(tasks) {
-    const taskTableBody = document.getElementById('taskTableBody');
-    taskTableBody.innerHTML = '';
-    
-    tasks.forEach((task, index) => {
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>#${501 + index}</td>
-            <td>${task.title}</td>
-            <td>${task.branch}</td>
-            <td>${task.deadline}</td>
-            <td><span class="badge ${task.status === 'pending' ? 'warning' : 'danger'}">${task.status === 'pending' ? 'في الانتظار' : 'فائت (Deadline)'}</span></td>
-            <td><button class="btn-sm" onclick="reviewTask('${task.id}')">مراجعة</button></td>
-        `;
-        taskTableBody.appendChild(newRow);
-    });
+function logout() {
+    document.getElementById('appContainer').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
 }
 
-// إرسال معاملة جديدة (Template) إلى السحابة فوراً لتظهر عند العميد الرئيسي وباقي الفروع
-document.getElementById('templateForm').addEventListener('submit', async (e) => {
+// التحكم بالنافذة المنبثقة للـ Templates
+const modal = document.getElementById('taskModal');
+const openModalBtn = document.getElementById('openModalBtn');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const templateForm = document.getElementById('templateForm');
+const taskTableBody = document.getElementById('taskTableBody');
+
+openModalBtn.addEventListener('click', () => { modal.style.display = 'flex'; });
+closeModalBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+templateForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    
     const title = document.getElementById('titleInput').value;
     const branch = document.getElementById('branchInput').value;
     const deadline = document.getElementById('deadlineInput').value;
-    const desc = document.getElementById('descInput').value;
 
-    const newTask = {
-        title: title,
-        branch: branch,
-        deadline: deadline,
-        description: desc,
-        status: 'pending'
-    };
-
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/tasks`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Prefer': 'return=representation'
-            },
-            body: JSON.stringify(newTask)
-        });
-
-        if (response.ok) {
-            alert('تم حفظ وإرسال المعاملة بنجاح عبر السحابة لجميع الفروع!');
-            document.getElementById('templateForm').reset();
-            document.getElementById('taskModal').style.display = 'none';
-            fetchTasks(); // تحديث الجدول فوراً
-        } else {
-            alert('حدث خطأ أثناء الحفظ.');
-        }
-    } catch (error) {
-        console.error('خطأ في الاتصال:', error);
-    }
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td>#502</td>
+        <td>${title}</td>
+        <td>${branch}</td>
+        <td>${deadline}</td>
+        <td><span class="badge warning">في الانتظار</span></td>
+        <td><button class="btn-sm">مراجعة القرار</button></td>
+    `;
+    taskTableBody.appendChild(newRow);
+    templateForm.reset();
+    modal.style.display = 'none';
+    alert('تم إرسال المعاملة عبر Template المخصصة بنجاح!');
 });
-
-// فتح وإغلاق النافذة المنبثقة
-const modal = document.getElementById('taskModal');
-document.getElementById('openModalBtn').addEventListener('click', () => { modal.style.display = 'flex'; });
-document.getElementById('closeModalBtn').addEventListener('click', () => { modal.style.display = 'none'; });
-
-// تحميل البيانات تلقائياً عند فتح الصفحة
-window.onload = fetchTasks;
